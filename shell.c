@@ -1,5 +1,6 @@
-
-
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,9 +9,9 @@
 int command_check(char *token);
 int twostrcmp(char a[],char b[]);
 
-int main(void)
+int main(int argc, char *argv[], char *envp[])
 {
-    //int fork_val;
+        int fork_val;
 
 	char *delim = " ";
 	char *token;
@@ -18,8 +19,9 @@ int main(void)
 	int flag = 0;
 	size_t val;
 	int exit_val = 1;
-
-    size_t n = 0;
+	char *args[] = {"ls", NULL};
+	char *enp[] = {"PATH=/usr/bin/ls",NULL};
+        size_t n = 0;
 
 	while (1)
 	{
@@ -27,18 +29,31 @@ int main(void)
 		val = getline(&buf, &n, stdin);
 
 		token = strtok(buf, delim);
+		if (*token == EOF)
+		return (0);  
 
-		exit_val = twostrcmp(token, "exit");
-	        if (exit_val == 0)
-        	return (0);
-
-	        flag = command_check(token);
+		flag = command_check(token);
         	if (flag == 0)
-            	printf("command present\n");
+            	{
+			fork_val = fork();
+
+			if (fork_val == 0)
+			execve("/bin/ls",args, enp);
+
+
+			else
+			{
+				wait(NULL);
+				continue;
+			}
+			
+		}
 
 		if (flag == 1)
-		printf("command absent\n");
-
+		{
+			errno = ENOENT;
+			perror("./shell");
+		}
 
 	}
 
@@ -69,7 +84,7 @@ int command_check(char *token)
 {
 	int flag = 0;
 	int i;
-	char *list[4] = {"cd", "pwd", "ls", NULL};
+	char *list[6] = {"echo","cat","touch", "pwd", "ls", NULL};
 
 
 	for (i = 0; list[i] != NULL; i++)
