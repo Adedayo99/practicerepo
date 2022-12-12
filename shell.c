@@ -18,21 +18,25 @@ int main(int argc, char *argv[], char *envp[])
 	char *buf = NULL;
 	int flag = 0;
 	size_t val;
+
 	int exit_val = 1;
 	char *args[] = {"ls", NULL};
 	char *enp[] = {"PATH=/usr/bin/ls",NULL};
+	char *arggs[] = {NULL};
         size_t n = 0;
 
 	while (1)
 	{
 		write(STDOUT_FILENO, "($) ", 4);
+
 		val = getline(&buf, &n, stdin);
+		if (val == -1)
+		return (-1);
 
-		token = strtok(buf, delim);
-		if (*token == EOF)
-		return (0);  
+		arggs = tokenizer(buf, val);
+	
+		flag = command_check(arggs[0]);
 
-		flag = command_check(token);
         	if (flag == 0)
             	{
 			fork_val = fork();
@@ -95,4 +99,40 @@ int command_check(char *token)
 	}
 
 	return (flag);
+}
+
+char **tokenizer(char *buf, size_t val)
+{
+	char *buf_copy;
+	char *token;
+	char *arggs[];
+	int i;
+	int token_count = 1;
+	char *delim = " ";
+
+	buf_copy = malloc(sizeof(char) * val);
+	if (buf_copy == NULL)
+	return (-1);
+
+	strcpy(buf_copy, buf);
+	token = strtok(buf_copy, delim);
+
+	while (token != NULL)
+	{
+		token = strtok(NULL, delim);
+		token_count++;
+	}
+
+	arggs = malloc(sizeof(char *) * token_count);
+
+	token = strtok(buf, delim);
+	for (i = 0; i < token_count; i++)
+	{
+		arggs[i] = malloc(sizeof(char) * strlen(token));
+		strcopy(arggs[i], token);
+		token = strtok(NULL, delim);
+	}
+
+
+	return (arggs);
 }
