@@ -1,28 +1,23 @@
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "shell.h"
 
-int command_check(char *token);
-int twostrcmp(char a[],char b[]);
+/**
+* main - mother function that runs the whole process
+* argc: argument count
+*@argv: argument vector
+*@envp: environment vector
+*
+* Return: int value to indicate success or failure
+*/
 
-int main(int argc, char *argv[], char *envp[])
+int main(void)
 {
         int fork_val;
-
-	char *delim = " ";
-	char *token;
+	int i;
 	char *buf = NULL;
 	int flag = 0;
 	size_t val;
-
-	int exit_val = 1;
-	char *args[] = {"ls", NULL};
-	char *enp[] = {"PATH=/usr/bin/ls",NULL};
-	char *arggs[] = {NULL};
+	char **arg = NULL;
+	char **arggs = NULL;
         size_t n = 0;
 
 	while (1)
@@ -33,31 +28,10 @@ int main(int argc, char *argv[], char *envp[])
 		if (val == -1)
 		return (-1);
 
-		arggs = tokenizer(buf, val);
+		arg = tokenizer(buf, val, arggs);
 	
-		flag = command_check(arggs[0]);
-
-        	if (flag == 0)
-            	{
-			fork_val = fork();
-
-			if (fork_val == 0)
-			execve("/bin/ls",args, enp);
-
-
-			else
-			{
-				wait(NULL);
-				continue;
-			}
-			
-		}
-
-		if (flag == 1)
-		{
-			errno = ENOENT;
-			perror("./shell");
-		}
+		for (i = 0; arg[i] != NULL; i++)
+		printf("%s\n", arg[i]);
 
 	}
 
@@ -66,6 +40,13 @@ int main(int argc, char *argv[], char *envp[])
 
 
 
+/*
+* twostrcmp - compares two string for equality
+*@a: input string
+*@b: input string
+*
+* Return: int value 
+*/
 int twostrcmp(char a[],char b[])
 {
 	int flag = 0;
@@ -84,6 +65,14 @@ int twostrcmp(char a[],char b[])
 	return (flag);
 }
 
+
+
+/*
+* command_check - determine if first token is a valid commaand
+*@token: pointer to first token
+*
+* Return: int value to indicate result
+*/
 int command_check(char *token)
 {
 	int flag = 0;
@@ -101,18 +90,26 @@ int command_check(char *token)
 	return (flag);
 }
 
-char **tokenizer(char *buf, size_t val)
+
+
+/*
+* tokenizer - converts input string from user into tokens
+*@buf: pointer to input string
+*@val: length of the input string
+*
+* Return: char ** pointer to list of tokens
+*/
+char **tokenizer(char *buf, size_t val, char **arggs)
 {
 	char *buf_copy;
 	char *token;
-	char *arggs[];
 	int i;
 	int token_count = 1;
 	char *delim = " ";
 
 	buf_copy = malloc(sizeof(char) * val);
 	if (buf_copy == NULL)
-	return (-1);
+	return ((char **) NULL);
 
 	strcpy(buf_copy, buf);
 	token = strtok(buf_copy, delim);
@@ -126,13 +123,45 @@ char **tokenizer(char *buf, size_t val)
 	arggs = malloc(sizeof(char *) * token_count);
 
 	token = strtok(buf, delim);
-	for (i = 0; i < token_count; i++)
+	for (i = 0; token != NULL; i++)
 	{
 		arggs[i] = malloc(sizeof(char) * strlen(token));
-		strcopy(arggs[i], token);
+		strcpy(arggs[i], token);
 		token = strtok(NULL, delim);
 	}
-
+	arggs[i] = NULL;
 
 	return (arggs);
+
+
 }
+
+/*
+int cmd_runner()		
+{
+		flag = command_check(arggs[0]);
+
+        	if (flag == 0)
+            	{
+			fork_val = fork();
+
+			if (fork_val == 0)
+			execve("ls",args, enp);
+
+
+			else
+			{
+				wait(NULL);
+				continue;
+			}
+			
+		}
+
+		if (flag == 1)
+		{
+			errno = ENOENT;
+			perror("./shell");
+}
+ */
+
+
