@@ -22,17 +22,16 @@ int main(void)
 
 	while (1)
 	{
-		write(STDOUT_FILENO, "($) ", 4);
+		write(STDOUT_FILENO, "($)", 3);
 
 		val = getline(&buf, &n, stdin);
 		if (val == -1)
 		return (-1);
 
 		arg = tokenizer(buf, val, arggs);
-	
-		for (i = 0; arg[i] != NULL; i++)
-		printf("%s\n", arg[i]);
+		cmd_exec(arg);
 
+		
 	}
 
 	return (0);
