@@ -19,3 +19,9 @@ int main(void)
 	char **arg = NULL;
 	char **arggs = NULL;
         size_t n = 0;
+
+	char *buf_copy;
+	char *token;
+	int i;
+	int token_count = 0;
+	char *delim = " ";
