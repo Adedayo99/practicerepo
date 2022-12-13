@@ -13,9 +13,7 @@
 int command_check(char *token);
 int twostrcmp(char a[],char b[]);
 char **tokenizer(char *buf, size_t val, char **arggs);
-int cmd_exec(char **arggs);
-
-
+void cmd_exec(char **argv);
 
 
 #endif

@@ -28,41 +28,14 @@ int main(void)
 		if (val == -1)
 		return (-1);
 
-		arg = tokenizer(buf, val, arggs);
-		cmd_exec(arg);
-
-		
+		arg = tokenizer(buf,val,arggs);
+		cmd_exec(arg);		
 	}
 
 	return (0);
 }
 
 
-
-/*
-* twostrcmp - compares two string for equality
-*@a: input string
-*@b: input string
-*
-* Return: int value 
-*/
-int twostrcmp(char a[],char b[])
-{
-	int flag = 0;
-	int i = 0;
-
-	while (a[i] != '\0' && b[i] != '\0')
-	{
-		if (a[i] != b[i])
-		{
-			flag = 1;
-			return (flag);
-		}
-		i++;
-	}
-
-	return (flag);
-}
 
 
 
@@ -81,8 +54,8 @@ int command_check(char *token)
 
 	for (i = 0; list[i] != NULL; i++)
 	{
-		flag = twostrcmp(token,list[i]);
-		if (flag == 0)
+		flag = strcmp(token,list[i]);
+		if (flag == 0) // check strcmp return val and adjust here
 		return (flag);
 	}
 
@@ -103,7 +76,7 @@ char **tokenizer(char *buf, size_t val, char **arggs)
 	char *buf_copy;
 	char *token;
 	int i;
-	int token_count = 1;
+	int token_count = 0;
 	char *delim = " ";
 
 	buf_copy = malloc(sizeof(char) * val);
@@ -118,6 +91,15 @@ char **tokenizer(char *buf, size_t val, char **arggs)
 		token = strtok(NULL, delim);
 		token_count++;
 	}
+	token_count++;   
+	i = 0;
+	while (buf_copy[i] != '\0')
+	{
+		if (buf_copy[i] == ' ')
+		token_count++;
+		i++;
+	}
+
 
 	arggs = malloc(sizeof(char *) * token_count);
 
@@ -131,7 +113,6 @@ char **tokenizer(char *buf, size_t val, char **arggs)
 	arggs[i] = NULL;
 
 	return (arggs);
-
 
 }
 

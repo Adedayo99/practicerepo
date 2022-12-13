@@ -7,15 +7,12 @@
 * Return: int value to indicate success
 */
 
-int cmd_exec(char **arggs)
-{
-	char *cmd = arggs[0];
-	
+void cmd_exec(char **arggs)
+{	
+	char *cmd = NULL;
+	cmd = arggs[0];
 
-	char cc[] = "/usr/bin/ls";
-	execve(cc, arggs, NULL);
-	// perror("./shell");
-
-	printf("something is wrong\n");
+	if (execve(cmd, arggs, NULL) == -1)
+	perror("./shell");
 
 }
