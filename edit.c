@@ -35,7 +35,44 @@ int main(void)
 		return (-1);
 
 		arg = tokenizer(buf,val,arggs);
-		cmd_exec(arg);		
+		cmd_exec(arg);	
+		
+	
+		buf_copy = malloc(sizeof(char) * val);
+	
+		
+		if (buf_copy == NULL)
+	return ((char **) NULL);
+
+	strcpy(buf_copy, buf);
+	token = strtok(buf_copy, delim);
+
+	while (token != NULL)
+	{
+		token = strtok(NULL, delim);
+		token_count++;
+	}
+	token_count++;   
+	i = 0;
+	while (buf_copy[i] != '\0')
+	{
+		if (buf_copy[i] == ' ')
+		token_count++;
+		i++;
+	}
+
+
+	arggs = malloc(sizeof(char *) * token_count);
+
+	token = strtok(buf, delim);
+	for (i = 0; token != NULL; i++)
+	{
+		arggs[i] = malloc(sizeof(char) * strlen(token));
+		strcpy(arggs[i], token);
+		token = strtok(NULL, delim);
+	}
+	arggs[i] = NULL;
+		
 	}
 
 	return (0);
