@@ -25,3 +25,21 @@ int main(void)
 	int i;
 	int token_count = 0;
 	char *delim = " ";
+
+	while (1)
+	{
+		write(STDOUT_FILENO, "($)", 3);
+
+		val = getline(&buf, &n, stdin);
+		if (val == -1)
+		return (-1);
+
+		arg = tokenizer(buf,val,arggs);
+		cmd_exec(arg);		
+	}
+
+	return (0);
+	
+	
+	
+	
