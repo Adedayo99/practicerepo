@@ -11,6 +11,7 @@
 char **tokenizer(char *buf);
 int cmd_check(char *token);
 void cmd_exec(char **argv);
+char *get_path(char *cmd);
 
 
 #endif

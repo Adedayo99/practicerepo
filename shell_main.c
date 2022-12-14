@@ -38,7 +38,7 @@ int main(void)
 		cmd_status = cmd_check(argv[0]);
 
 		if (cmd_status == 0)
-		cmd_exec(argv);		
+		get_path(argv[0]);		
 	}
 
 	return (0);
@@ -57,7 +57,7 @@ int cmd_check(char *token)
 {
 	int flag = 1;
 	int i = 0;
-	char *args[] = {"/usr/bin/pwd","ls", "touch", "pwd", NULL};
+	char *args[] = {"ls", "touch", "pwd", NULL};
 
 	while (args[i] != NULL)
 	{
