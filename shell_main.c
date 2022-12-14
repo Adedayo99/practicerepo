@@ -8,12 +8,12 @@
 
 int main(void)
 {
-	int val, i;
+	int val, i, fork_val;
 	int cmd_status;
 	char *buf = NULL;
 	size_t n = 0;
 	char **argv = NULL;
-
+	char *cmd_path = NULL;
 
 	while (1)
 	{
@@ -32,13 +32,28 @@ int main(void)
 		}
 		buf = &buf[i];
 
-		printf("%ld\n", strlen(buf));
-
 		argv = tokenizer(buf);
 		cmd_status = cmd_check(argv[0]);
 
 		if (cmd_status == 0)
-		get_path(argv[0]);		
+		{
+			fork_val = fork();
+
+			if (fork_val == 0)
+			{
+				cmd_path = get_path(argv[0]);
+				cmd_exec(argv, cmd_path);
+			}
+
+			else
+			wait(NULL);
+		}
+
+/*		else
+		{
+			errno = 
+			perror("./shell");
+*/
 	}
 
 	return (0);
@@ -57,7 +72,7 @@ int cmd_check(char *token)
 {
 	int flag = 1;
 	int i = 0;
-	char *args[] = {"ls", "touch", "pwd", NULL};
+	char *args[] = {"ls", "touch", "pwd", "rm", "echo", "cat", NULL};
 
 	while (args[i] != NULL)
 	{

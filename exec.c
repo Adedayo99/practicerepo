@@ -6,10 +6,10 @@
 */
 #include "shell.h"
 
-void cmd_exec(char **argv)
+void cmd_exec(char **argv, char *cmd_path)
 {
 
-	if ((execve(argv[0], argv, NULL) == -1))
+	if ((execve(cmd_path, argv, NULL) == -1))
 	perror("./shell");
 
 }
